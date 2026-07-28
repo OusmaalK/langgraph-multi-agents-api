@@ -164,6 +164,86 @@ Exemple pratique dans un screen frontend en html test.html
 </body>
 </html>
 
+Pratique metier 
+
+Pour exploiter cette API de manière optimale dans un **espace administrateur (dashboard de monitoring)** et offrir une excellente visibilité sur les performances et l'état des agents, voici comment mettre en place la logique d'intégration :
+
+1. Structure de l'interface d'administration (Dashboard)
+
+Votre écran d'administration doit se diviser en blocs visuels clés alimentés par les données retournées par l'API (`/api/agent/lancer`) :
+
+Un Indicateur d'État (Status Card) : Pour afficher si le service est joignable (`success: true`).
+Un Compteur de Synthèse : Pour afficher directement le montant total calculé par l'agent comptable (`resultat.total`).
+Un Tableau ou une Liste des Données Brutes : Pour lister chaque transaction analysée (ID, montant, devise, statut VIP) issue de `resultat.donnees`.
+Un Journal d'Activité (Logs) : Pour afficher le message de confirmation du workflow (`resultat.message`) et l'identifiant de session (`sessionId`).
+
+
+2. Implémentation du code de monitoring (JavaScript Front-end)
+
+Voici un exemple concret de script à intégrer dans votre espace administrateur pour récupérer, actualiser et afficher ces métriques en temps réel :
+
+async function chargerDashboardAdmin() {
+    const indicateurStatut = document.getElementById('admin-status');
+    const totalElement = document.getElementById('admin-total');
+    const tableauTransactions = document.getElementById('admin-table-body');
+    const logsElement = document.getElementById('admin-logs');
+
+    try {
+        indicateurStatut.innerHTML = "⏳ Chargement des données...";
+        
+        // Appel de l'API proxy sécurisée
+        const reponse = await fetch('https://votre-projet.vercel.app/api/agent/lancer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                sessionId: "admin_monitor_" + Date.now(),
+                prompt: "Rafraîchir le monitoring" 
+            })
+        });
+
+        const data = await reponse.json();
+
+        if (data.success) {
+            // 1. Mise à jour du statut global
+            indicateurStatut.innerHTML = '<span style="color: green;">● Système Opérationnel</span>';
+            
+            // 2. Affichage du total comptable
+            totalElement.innerText = `${data.resultat.total} USD`;
+
+            // 3. Affichage du message de l'agent
+            logsElement.innerText = `[Session: ${data.sessionId}] - ${data.resultat.message}`;
+
+            // 4. Injection des données dans un tableau de monitoring
+            tableauTransactions.innerHTML = ''; // Nettoyage
+            data.resultat.donnees.forEach(item => {
+                const ligne = `<tr>
+                    <td>#${item.id}</td>
+                    <td>${item.montant} ${item.devise}</td>
+                    <td>${item.isVIP ? '⭐ VIP' : 'Standard'}</td>
+                </tr>`;
+                tableauTransactions.innerHTML += ligne;
+            });
+        } else {
+            indicateurStatut.innerHTML = '<span style="color: red;">● Erreur de traitement</span>';
+        }
+    } catch (error) {
+        console.error("Erreur de connexion à l'API:", error);
+        indicateurStatut.innerHTML = '<span style="color: red;">● API Hors ligne</span>';
+    }
+}
+
+// Actualiser automatiquement les données toutes les 30 secondes pour un vrai monitoring
+setInterval(chargerDashboardAdmin, 30000);
+
+// Charger au démarrage de la page
+window.onload = chargerDashboardAdmin;
+
+3. Bonnes pratiques pour un espace administrateur performant
+
+Auto-rafraîchissement (Polling) : Utilisez `setInterval` (comme dans l'exemple ci-dessus) pour que l'administrateur voie les données se mettre à jour en arrière-plan sans avoir à recharger toute la page manuellement.
+Gestion des états de chargement (Loaders) : Affichez des squelettes de chargement (skeletons) ou des icônes de rotation pendant que l'API exécute le graphe multi-agents.
+Indicateurs visuels (Badges de couleur) : Utilisez des codes couleur (vert pour les transactions normales ou VIP, rouge pour les anomalies) pour donner de la visibilité en un coup d'œil à l'administrateur.
+
 
 
 
