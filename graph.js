@@ -1,6 +1,5 @@
 const { StateGraph, END } = require("@langchain/langgraph");
-
-const transactionsData = require('./transactions.json');
+const transactionsData = require('./transactions.json'); // Import direct du JSON en mémoire
 
 // 1. Définition de la structure de l'État partagé entre les agents
 const GraphState = {
@@ -29,9 +28,9 @@ const workflow = new StateGraph({
 
 // Définition des fonctions de chaque agent (les nœuds)
 async function agentAnalyste(state) {
-    console.log("🔍 [Agent Analyste] : Utilisation des données en mémoire...");
-    return { donneesBrutes: transactionsData };
-  }
+  console.log("🔍 [Agent Analyste] : Utilisation des données en mémoire...");
+  return { donneesBrutes: transactionsData };
+}
 
 async function agentComptable(state) {
   console.log("🧮 [Agent Comptable] : Calcul du total des montants...");
@@ -50,7 +49,7 @@ async function agentRédacteur(state) {
     dateGeneration: new Date().toISOString()
   };
   
-  // On retourne simplement le statut sans fs.writeFileSync
+  // Pas d'écriture de fichier physique (interdit sur Vercel)
   return { rapportStatut: "Rapport généré avec succès en mémoire" };
 }
 
