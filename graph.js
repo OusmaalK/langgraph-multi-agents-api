@@ -27,13 +27,17 @@ const workflow = new StateGraph({
 
 // Définition des fonctions de chaque agent (les nœuds)
 async function agentAnalyste(state) {
-  console.log("🔍 [Agent Analyste] : Récupération des données brutes...");
-  const fs = require('fs');
-  const rawData = fs.readFileSync('./transactions.json', 'utf8');
-  const donnees = JSON.parse(rawData);
-  
-  return { donneesBrutes: donnees };
-}
+    console.log("🔍 [Agent Analyste] : Récupération des données brutes...");
+    const fs = require('fs');
+    const path = require('path'); // 1. Importer path
+    
+    // 2. Utiliser le chemin absolu
+    const cheminFichier = path.join(__dirname, 'transactions.json');
+    const rawData = fs.readFileSync(cheminFichier, 'utf8');
+    const donnees = JSON.parse(rawData);
+    
+    return { donneesBrutes: donnees };
+  }
 
 async function agentComptable(state) {
   console.log("🧮 [Agent Comptable] : Calcul du total des montants...");
