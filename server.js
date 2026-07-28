@@ -63,6 +63,31 @@ workflow.addEdge("redacteur", END);
 
 const appGraph = workflow.compile();
 
+// --- Nouvelle Route Publique (appelée par le Front-end) ---
+app.post('/api/agent/lancer', async (req, res) => {
+  const { sessionId, prompt } = req.body;
+  try {
+    console.log(`\n📥 Requête reçue du Front-end pour la session [${sessionId}]`);
+    
+    // Exécution directe du graphe d'agents en interne (sans exposer de clé au client)
+    const resultatFinal = await appGraph.invoke({});
+    
+    return res.json({ 
+      success: true, 
+      sessionId, 
+      architecture: "Multi-Agents (LangGraph)",
+      resultat: {
+        message: resultatFinal.rapportStatut,
+        total: resultatFinal.totalMontant,
+        donnees: resultatFinal.donneesBrutes
+      } 
+    });
+  } catch (error) {
+    console.error(`❌ Erreur :`, error.message);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // --- Route API ---
 app.post('/api/agent/executer', async (req, res) => {
     const apiKey = req.headers['x-api-key'];
