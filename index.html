@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Orchestration Multi-Agents</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        button { background-color: #6c5ce7; color: white; border: none; padding: 12px 24px; cursor: pointer; font-size: 16px; border-radius: 4px; }
+        button:hover { background-color: #5849be; }
+        pre { background: #1e1e2f; color: #00ffcc; padding: 15px; border-radius: 6px; white-space: pre-wrap; }
+        .steps { display: flex; gap: 10px; margin-bottom: 15px; }
+        .step { background: #dfe6e9; padding: 8px 12px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .active { background: #00b894; color: white; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Orchestration Multi-Agents (LangGraph.js)</h2>
+        <div class="steps">
+            <div class="step active">1. Analyste (Données)</div>
+            <div class="step active">2. Comptable (Calculs)</div>
+            <div class="step active">3. Rédacteur (Sauvegarde)</div>
+        </div>
+        <button id="btnLancer">Lancer le Workflow Multi-Agents</button>
+    </div>
+
+    <div class="card">
+        <h3>Résultat de l'orchestration :</h3>
+        <pre id="resultat">En attente du lancement...</pre>
+    </div>
+
+    <script>
+        document.getElementById('btnLancer').onclick = async () => {
+            const resultatElem = document.getElementById('resultat');
+            resultatElem.innerText = "⏳ Les agents collaborent (Analyste ➔ Comptable ➔ Rédacteur)...";
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/agent/executer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        sessionId: "session_multi_" + Date.now(), 
+                        prompt: "Lancer le processus d'analyse financière" 
+                    })
+                });
+                
+                const data = await response.json();
+                resultatElem.innerText = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultatElem.innerText = "❌ Erreur réseau : " + err.message;
+            }
+        };
+    </script>
+</body>
+</html>

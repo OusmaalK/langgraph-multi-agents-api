@@ -1,0 +1,6 @@
+[
+    { "id": 1, "montant": 150.50, "devise": "USD", "isVIP": true, "client": "Alice" },
+    { "id": 2, "montant": 540.00, "devise": "USD", "isVIP": false, "client": "Bob" },
+    { "id": 3, "montant": 1250.75, "devise": "USD", "isVIP": true, "client": "Charlie" },
+    { "id": 4, "montant": 450.00, "devise": "USD", "isVIP": false, "client": "Diana" }
+  ]

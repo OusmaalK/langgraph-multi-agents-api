@@ -1,0 +1,30 @@
+{
+  "total": 2051.25,
+  "donnees": [
+    {
+      "id": 1,
+      "montant": 150.5,
+      "devise": "USD",
+      "isVIP": true
+    },
+    {
+      "id": 2,
+      "montant": 200,
+      "devise": "USD",
+      "isVIP": false
+    },
+    {
+      "id": 3,
+      "montant": 1250.75,
+      "devise": "USD",
+      "isVIP": true
+    },
+    {
+      "id": 4,
+      "montant": 450,
+      "devise": "USD",
+      "isVIP": false
+    }
+  ],
+  "dateGeneration": "2026-07-28T17:05:26.281Z"
+}

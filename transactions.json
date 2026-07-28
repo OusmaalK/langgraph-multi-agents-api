@@ -1,0 +1,6 @@
+[
+    { "id": 1, "montant": 150.50, "devise": "USD", "isVIP": true },
+    { "id": 2, "montant": 200.00, "devise": "USD", "isVIP": false },
+    { "id": 3, "montant": 1250.75, "devise": "USD", "isVIP": true },
+    { "id": 4, "montant": 450.00, "devise": "USD", "isVIP": false }
+]

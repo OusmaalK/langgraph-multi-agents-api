@@ -1,0 +1,30 @@
+{
+  "nombreTotalTransactions": 4,
+  "chiffreAffairesTotalEUR": 1822.69,
+  "details": [
+    {
+      "montantInitial": 150.5,
+      "devise": "USD",
+      "isVIP": true,
+      "montantFinalEUR": 131.537
+    },
+    {
+      "montantInitial": 200,
+      "devise": "USD",
+      "isVIP": false,
+      "montantFinalEUR": 184
+    },
+    {
+      "montantInitial": 1250.75,
+      "devise": "USD",
+      "isVIP": true,
+      "montantFinalEUR": 1093.1555
+    },
+    {
+      "montantInitial": 450,
+      "devise": "USD",
+      "isVIP": false,
+      "montantFinalEUR": 414
+    }
+  ]
+}
