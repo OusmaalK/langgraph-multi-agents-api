@@ -45,18 +45,18 @@
             resultatElem.innerText = "⏳ Authentification et exécution des agents en cours...";
             
             try {
-                const response = await fetch('http://localhost:3000/api/agent/executer', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        // On passe la clé API sécurisée dans le header attendu par le serveur
-                        'x-api-key': 'df0b91a5715cb1f6b54ca35420c553c99683ef40a012fcd1f4275f47de69ceee'
-                    },
-                    body: JSON.stringify({ 
-                        sessionId: "session_web_" + Date.now(), 
-                        prompt: "Lancer le processus d'analyse financière depuis le web" 
-                    })
-                });
+                const response = await fetch('https://langgraph-multi-agents-api.vercel.app/api/agent/executer', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    // On passe la clé API sécurisée dans le header attendu par le serveur
+                    'x-api-key': 'df0b91a5715cb1f6b54ca35420c553c99683ef40a012fcd1f4275f47de69ceee'
+                },
+                body: JSON.stringify({ 
+                    sessionId: "session_web_" + Date.now(), 
+                    prompt: "Lancer le processus d'analyse financière depuis le web" 
+                })
+            });
                 
                 const data = await response.json();
                 
