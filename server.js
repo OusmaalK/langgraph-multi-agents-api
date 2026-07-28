@@ -107,3 +107,4 @@ app.post('/api/agent/executer', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Serveur Multi-Agents démarré sur le port ${PORT}`);
 });
+module.exports = app;
