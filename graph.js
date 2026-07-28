@@ -29,9 +29,9 @@ const workflow = new StateGraph({
 async function agentAnalyste(state) {
     console.log("🔍 [Agent Analyste] : Récupération des données brutes...");
     const fs = require('fs');
-    const path = require('path'); // 1. Importer path
+    const path = require('path'); // Importez path
     
-    // 2. Utiliser le chemin absolu
+    // Utilisation d'un chemin absolu compatible avec Vercel
     const cheminFichier = path.join(__dirname, 'transactions.json');
     const rawData = fs.readFileSync(cheminFichier, 'utf8');
     const donnees = JSON.parse(rawData);
