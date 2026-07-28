@@ -87,3 +87,83 @@ curl -X POST https://votre-projet.vercel.app/api/agent/executer \
   -H "x-api-key: VOS_CLE_API_SECRETE" \
   -d '{"sessionId": "test_1", "prompt": "Lancer"}'
 
+
+Exemple pratique dans un screen frontend en html test.html
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Orchestration Multi-Agents Sécurisée</title>
+    <!-- Importation de Mermaid.js pour générer le graphe visuel -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        button { background-color: #6c5ce7; color: white; border: none; padding: 12px 24px; cursor: pointer; font-size: 16px; border-radius: 4px; }
+        button:hover { background-color: #5849be; }
+        pre { background: #1e1e2f; color: #00ffcc; padding: 15px; border-radius: 6px; white-space: pre-wrap; }
+        .mermaid { text-align: center; margin: 20px 0; background: #fff; padding: 10px; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Orchestration Multi-Agents (LangGraph.js & API Proxy)</h2>
+        <p>Visualisation du graphe d'architecture :</p>
+        
+        <!-- Le conteneur du graphe Mermaid -->
+        <div class="mermaid">
+            graph LR
+                Start([Début]) --> Analyste[🔍 Agent Analyste]
+                Analyste --> Comptable[🧮 Agent Comptable]
+                Comptable --> Redacteur[✍️ Agent Rédacteur]
+                Redacteur --> End([Fin])
+        </div>
+
+        <button id="btnLancer">Lancer le Workflow</button>
+    </div>
+
+    <div class="card">
+        <h3>Résultat JSON de l'orchestration :</h3>
+        <pre id="resultat">En attente du lancement...</pre>
+    </div>
+
+    <script>
+        document.getElementById('btnLancer').onclick = async () => {
+            const resultatElem = document.getElementById('resultat');
+            resultatElem.innerText = "⏳ Exécution des agents en cours...";
+            
+            try {
+                // Appel direct de la route proxy sécurisée (sans exposer de clé API)
+                const response = await fetch('https://langgraph-multi-agents-api.vercel.app/api/agent/lancer', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        sessionId: "session_web_" + Date.now(), 
+                        prompt: "Lancer le processus d'analyse financière depuis le web" 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultatElem.innerText = JSON.stringify(data, null, 2);
+                } else {
+                    resultatElem.innerText = "❌ Erreur : " + (data.error || "Requête refusée");
+                }
+            } catch (err) {
+                resultatElem.innerText = "❌ Erreur réseau / Serveur injoignable : " + err.message;
+            }
+        };
+    </script>
+</body>
+</html>
+
+
+
+
