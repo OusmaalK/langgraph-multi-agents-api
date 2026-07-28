@@ -1,5 +1,7 @@
 const { StateGraph, END } = require("@langchain/langgraph");
 
+const transactionsData = require('./transactions.json');
+
 // 1. Définition de la structure de l'État partagé entre les agents
 const GraphState = {
   messages: {
@@ -27,16 +29,8 @@ const workflow = new StateGraph({
 
 // Définition des fonctions de chaque agent (les nœuds)
 async function agentAnalyste(state) {
-    console.log("🔍 [Agent Analyste] : Récupération des données brutes...");
-    const fs = require('fs');
-    const path = require('path'); // Importez path
-    
-    // Utilisation d'un chemin absolu compatible avec Vercel
-    const cheminFichier = path.join(__dirname, 'transactions.json');
-    const rawData = fs.readFileSync(cheminFichier, 'utf8');
-    const donnees = JSON.parse(rawData);
-    
-    return { donneesBrutes: donnees };
+    console.log("🔍 [Agent Analyste] : Utilisation des données en mémoire...");
+    return { donneesBrutes: transactionsData };
   }
 
 async function agentComptable(state) {
@@ -48,9 +42,7 @@ async function agentComptable(state) {
 }
 
 async function agentRédacteur(state) {
-  console.log("✍️ [Agent Rédacteur] : Génération et sauvegarde du rapport...");
-  const fs = require('fs');
-  const path = require('path');
+  console.log("✍️ [Agent Rédacteur] : Génération du rapport en mémoire...");
   
   const rapport = {
     total: state.totalMontant,
@@ -58,10 +50,8 @@ async function agentRédacteur(state) {
     dateGeneration: new Date().toISOString()
   };
   
-  const chemin = path.join(__dirname, 'rapport_api.json');
-  fs.writeFileSync(chemin, JSON.stringify(rapport, null, 2), 'utf8');
-  
-  return { rapportStatut: `Sauvegardé avec succès à ${chemin}` };
+  // On retourne simplement le statut sans fs.writeFileSync
+  return { rapportStatut: "Rapport généré avec succès en mémoire" };
 }
 
 // 3. Ajout des nœuds au graphe
