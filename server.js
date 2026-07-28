@@ -1,9 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
 const path = require('path');
 const { StateGraph, END } = require("@langchain/langgraph");
+
+// Import direct du JSON en mémoire (fonctionne partout, y compris sur Vercel)
+const transactionsData = require('./transactions.json');
 
 const app = express();
 app.use(express.json());
@@ -31,9 +33,8 @@ const workflow = new StateGraph({ channels: GraphState });
 
 // Nœud 1 : Agent Analyste
 async function agentAnalyste(state) {
-  console.log("🔍 [Agent Analyste] : Récupération des données brutes...");
-  const rawData = fs.readFileSync('./transactions.json', 'utf8');
-  return { donneesBrutes: JSON.parse(rawData) };
+  console.log("🔍 [Agent Analyste] : Utilisation des données en mémoire...");
+  return { donneesBrutes: transactionsData };
 }
 
 // Nœud 2 : Agent Comptable
@@ -46,15 +47,8 @@ async function agentComptable(state) {
 
 // Nœud 3 : Agent Rédacteur
 async function agentRédacteur(state) {
-  console.log("✍️ [Agent Rédacteur] : Génération et sauvegarde du rapport...");
-  const chemin = path.join(__dirname, 'rapport_api.json');
-  const rapport = {
-    total: state.totalMontant,
-    donnees: state.donneesBrutes,
-    dateGeneration: new Date().toISOString()
-  };
-  fs.writeFileSync(chemin, JSON.stringify(rapport, null, 2), 'utf8');
-  return { rapportStatut: `Rapport sauvegardé avec succès dans ${chemin}` };
+  console.log("✍️ [Agent Rédacteur] : Génération du rapport en mémoire...");
+  return { rapportStatut: "Rapport généré avec succès en mémoire" };
 }
 
 // Ajout et liaison des nœuds
@@ -71,10 +65,8 @@ const appGraph = workflow.compile();
 
 // --- Route API ---
 app.post('/api/agent/executer', async (req, res) => {
-    // 1. Récupération de la clé fournie dans l'en-tête (header) de la requête
     const apiKey = req.headers['x-api-key'];
   
-    // 2. Vérification par rapport à la variable d'environnement
     if (!apiKey || apiKey !== process.env.EXTERNAL_API_KEY) {
       return res.status(401).json({ 
         success: false, 
